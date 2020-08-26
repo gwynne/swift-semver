@@ -14,7 +14,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftSemver",
+    name: "swift-semver",
     products: [
         .library(name: "SwiftSemver", targets: ["SwiftSemver"]),
     ],
