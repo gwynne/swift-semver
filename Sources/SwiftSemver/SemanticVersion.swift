@@ -31,19 +31,19 @@
 /// observable via, e.g., the results of applying a sorting algorithm.
 public struct SemanticVersion: Hashable {
     /// The major version number.
-    public let major: UInt
+    public var major: UInt
 
     /// The minor version number.
-    public let minor: UInt
+    public var minor: UInt
 
     /// The patch level number.
-    public let patch: UInt
+    public var patch: UInt
 
     /// The prerelease identifiers.
-    public let prereleaseIdentifiers: [String]
+    public var prereleaseIdentifiers: [String]
 
     /// The build metadata identifiers.
-    public let buildMetadataIdentifiers: [String]
+    public var buildMetadataIdentifiers: [String]
 
     /// Create a semantic version from the individual components.
     ///
@@ -132,7 +132,7 @@ public struct SemanticVersion: Hashable {
 }
 
 extension SemanticVersion: Comparable {
-    /// See `Comparable.<(lhs:rhs:)`. Implements the "precedence" ordering specified by the semver specification.
+    /// See ``Comparable/<(lhs:rhs:)``. Implements the "precedence" ordering specified by the semver specification.
     public static func < (lhs: SemanticVersion, rhs: SemanticVersion) -> Bool {
         let lhsComponents = [lhs.major, lhs.minor, lhs.patch]
         let rhsComponents = [rhs.major, rhs.minor, rhs.patch]
@@ -160,7 +160,7 @@ extension SemanticVersion: Comparable {
 }
 
 extension SemanticVersion: LosslessStringConvertible {
-    /// See `CustomStringConvertible.description`. An additional API guarantee is made that this property will always
+    /// See ``CustomStringConvertible/description``. An additional API guarantee is made that this property will always
     /// yield a string which is correctly formatted as a valid semantic version number.
     public var description: String {
         return """
@@ -172,19 +172,19 @@ extension SemanticVersion: LosslessStringConvertible {
             """
     }
     
-    /// See `LosslessStringConvertible.init(_:)`. The semantics are identical to those of `init?(string:)`.
+    /// See ``LosslessStringConvertible/init(_:)``. The semantics are identical to those of ``init?(string:)``.
     public init?(_ description: String) {
         self.init(string: description)
     }
 }
 
 extension SemanticVersion: Codable {
-    /// See `Encodable.encode(to:)`.
+    /// See ``Encodable/encode(to:)``.
     public func encode(to encoder: Encoder) throws {
         try self.description.encode(to: encoder)
     }
 
-    /// See `Decodable.init(from:)`.
+    /// See ``Decodable/init(from:)``.
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let raw = try container.decode(String.self)
@@ -197,7 +197,7 @@ extension SemanticVersion: Codable {
 }
 
 fileprivate extension Array where Element == String {
-    /// Identical to `joined(separator:)`, except that when the result is non-empty, the provided `prefix` will be
+    /// Identical to ``joined(separator:)``, except that when the result is non-empty, the provided `prefix` will be
     /// prepended to it. This is a mildly silly solution to the issue of how best to implement "add a joiner character
     /// between one interpolation and the next, but only if the second one is non-empty".
     func joined(separator: String, prefix: String) -> String {
@@ -228,7 +228,7 @@ fileprivate extension Character {
 }
 
 fileprivate extension StringProtocol {
-    /// See `Character.isValidInSemverIdentifier` for validity rules.
+    /// See ``Character/isValidInSemverIdentifier`` for validity rules.
     var isValidSemverIdentifier: Bool {
         return self.allSatisfy { $0.isValidInSemverIdentifier }
     }
