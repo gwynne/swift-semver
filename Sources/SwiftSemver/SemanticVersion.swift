@@ -29,7 +29,7 @@
 /// provides a detailed algorithm for making this determination. The most notable difference between this algorithm and
 /// an equality comparison is that precedence does not consider build metadata identifiers; this behavior may be
 /// observable via, e.g., the results of applying a sorting algorithm.
-public struct SemanticVersion: Hashable {
+public struct SemanticVersion: Sendable, Hashable {
     /// The major version number.
     public var major: UInt
 
