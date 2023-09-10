@@ -84,10 +84,15 @@ final class SwiftSemverTests: XCTestCase {
         XCTAssertEqual(SemanticVersion("1.2.3-1.dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["1", "dev"]))
         XCTAssertEqual(SemanticVersion("1.2.3-dev-a"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev-a"]))
         XCTAssertEqual(SemanticVersion("1.2.3--dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["-dev"]))
+        XCTAssertEqual(SemanticVersion("1.2.3-dev.0"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev", "0"]))
+        XCTAssertEqual(SemanticVersion("1.2.3-dev.1"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev", "1"]))
+        XCTAssertEqual(SemanticVersion("1.2.3-0"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["0"]))
+        XCTAssertEqual(SemanticVersion("1.2.3-1"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["1"]))
         
         for badStr in [
             "1.2.3-!dev", "1.2.3-dev!", "1.2.3-d!ev", // non-letter characters
-            "1.2.3-dev-!1", "1.2.3-dev-1!", "1.2.3-dev.!",
+            "1.2.3-dev-!1", "1.2.3-dev-1!", "1.2.3-dev.!", // more non-letter characters
+            "1.2.3-dev.01", "1.2.3-dev.00", // non-zero numeric starting with 0
         ] {
             XCTAssertNil(SemanticVersion("\(badStr)"))
             XCTAssertNil(SemanticVersion("\(badStr)+b"))
@@ -102,6 +107,8 @@ final class SwiftSemverTests: XCTestCase {
         XCTAssertEqual(SemanticVersion("1.2.3+1.dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["1", "dev"]))
         XCTAssertEqual(SemanticVersion("1.2.3+dev-a"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev-a"]))
         XCTAssertEqual(SemanticVersion("1.2.3+-dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["-dev"]))
+        XCTAssertEqual(SemanticVersion("1.2.3+dev.0"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev", "0"]))
+        XCTAssertEqual(SemanticVersion("1.2.3+dev.01"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev", "01"]))
 
         for badStr in [
             "1.2.3+!dev", "1.2.3+dev!", "1.2.3+d!ev", // non-letter characters
