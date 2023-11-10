@@ -40,7 +40,7 @@ final class SwiftSemverTests: XCTestCase {
                           SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["b", "a"], buildMetadataIdentifiers: ["a", "b"]))
     }
     
-    func testParseVersionCore() throws {
+    func testParseVersion() throws {
         XCTAssertEqual(SemanticVersion("0.0.0"), SemanticVersion(0, 0, 0))
 
         XCTAssertEqual(SemanticVersion("0.0.1"), SemanticVersion(0, 0, 1))
@@ -76,7 +76,7 @@ final class SwiftSemverTests: XCTestCase {
         }
     }
     
-    func testParseVersionCoreWithPreRelease() throws {
+    func testParseVersionWithPreRelease() throws {
         XCTAssertEqual(SemanticVersion("1.2.3-dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev"]))
         XCTAssertEqual(SemanticVersion("1.2.3-dev1.dev2"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev1", "dev2"]))
         XCTAssertEqual(SemanticVersion("1.2.3-dev.1.more"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev", "1", "more"]))
@@ -99,7 +99,7 @@ final class SwiftSemverTests: XCTestCase {
         }
     }
     
-    func testParseVersionCoreWithBuild() throws {
+    func testParseVersionWithBuild() throws {
         XCTAssertEqual(SemanticVersion("1.2.3+dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev"]))
         XCTAssertEqual(SemanticVersion("1.2.3+dev1.dev2"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev1", "dev2"]))
         XCTAssertEqual(SemanticVersion("1.2.3+dev.1.more"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["dev", "1", "more"]))
@@ -118,7 +118,7 @@ final class SwiftSemverTests: XCTestCase {
         }
     }
     
-    func testParseVersionCoreWithPrereleaseAndBuild() throws {
+    func testParseVersionWithPrereleaseAndBuild() throws {
         XCTAssertEqual(SemanticVersion("1.2.3-dev+dev"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev"], buildMetadataIdentifiers: ["dev"]))
         XCTAssertEqual(SemanticVersion("1.2.3-dev1.dev2+dev1.dev2"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev1", "dev2"], buildMetadataIdentifiers: ["dev1", "dev2"]))
         XCTAssertEqual(SemanticVersion("1.2.3-dev.1.more+dev.1.more"), SemanticVersion(1, 2, 3, prereleaseIdentifiers: ["dev", "1", "more"], buildMetadataIdentifiers: ["dev", "1", "more"]))
@@ -146,7 +146,40 @@ final class SwiftSemverTests: XCTestCase {
         XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["1"], buildMetadataIdentifiers: ["1"]).description, "1.0.0-1+1")
     }
     
-    func testPrecedenceWithVersionCoreOnly() throws {
+    func testVersionDebugDescription() throws {
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 1, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 1 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 1, 1, prereleaseIdentifiers: [], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 1 Patch: 1 Prerelease identifiers: [] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["a"], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [a] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["a", "b"], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [a, b] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["1", "a"], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [1, a] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["1"], buildMetadataIdentifiers: []).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [1] Build metadata identifiers: []}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["a"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: [a]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["a", "b"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: [a, b]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["1", "a"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: [1, a]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: [], buildMetadataIdentifiers: ["1"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [] Build metadata identifiers: [1]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["a"], buildMetadataIdentifiers: ["a"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [a] Build metadata identifiers: [a]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["a", "b"], buildMetadataIdentifiers: ["a", "b"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [a, b] Build metadata identifiers: [a, b]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["1", "a"], buildMetadataIdentifiers: ["1", "a"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [1, a] Build metadata identifiers: [1, a]}")
+        XCTAssertEqual(SemanticVersion(1, 0, 0, prereleaseIdentifiers: ["1"], buildMetadataIdentifiers: ["1"]).debugDescription,
+                       "Version:{Major: 1 Minor: 0 Patch: 0 Prerelease identifiers: [1] Build metadata identifiers: [1]}")
+    }
+    
+    func testPrecedenceWithVersionOnly() throws {
         // Comparable <
         XCTAssertLessThan(SemanticVersion("0.0.0")!, SemanticVersion("0.0.1")!)
         XCTAssertLessThan(SemanticVersion("0.0.0")!, SemanticVersion("0.1.0")!)
@@ -248,6 +281,28 @@ final class SwiftSemverTests: XCTestCase {
                 XCTAssertGreaterThan($0, ver)
                 XCTAssertGreaterThanOrEqual($0, ver)
             }
+        }
+    }
+    
+    func testCodableBehavior() throws {
+        let encoder = JSONEncoder(), decoder = JSONDecoder()
+         
+        let testVersion = try XCTUnwrap(SemanticVersion("1.2.3-4.alpha.5+a.b.c"))
+
+        let json = String(decoding: try encoder.encode(testVersion), as: UTF8.self)
+        XCTAssertEqual(json, "\"\(testVersion)\"")
+        
+        let result = try decoder.decode(SemanticVersion.self, from: Data(json.utf8))
+        XCTAssertEqual(result.major, testVersion.major)
+        XCTAssertEqual(result.minor, testVersion.minor)
+        XCTAssertEqual(result.patch, testVersion.patch)
+        XCTAssertEqual(result.prereleaseIdentifiers, testVersion.prereleaseIdentifiers)
+        XCTAssertEqual(result.buildMetadataIdentifiers, testVersion.buildMetadataIdentifiers)
+        
+        XCTAssertThrowsError(try decoder.decode(SemanticVersion.self, from: Data("\"not a valid version string\"".utf8))) {
+            guard let decodingError = $0 as? DecodingError else { return XCTFail("Expected a DecodingError but got \($0)") }
+            guard case .dataCorrupted(let context) = decodingError else { return XCTFail("Expected DecodingError.dataCorrupted but got \(decodingError)") }
+            XCTAssert(context.codingPath.isEmpty)
         }
     }
 }
